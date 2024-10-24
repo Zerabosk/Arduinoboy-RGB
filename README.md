@@ -1,4 +1,4 @@
-# Arduinoboy
+# Arduinoboy - RGB Edition
 Un-official ArduinoBoy fork that uses a single RGB LED.
 
 ![ScreenShot](http://trash80.net/arduinoboy/aboy1_2_0.jpg)
