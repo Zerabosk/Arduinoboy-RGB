@@ -1,5 +1,8 @@
 ## Changelog
 
+### 10/24/24
+* Replaced the 5 mode LEDs with a RGB LED.
+
 ### 05/19/20
 * Arduinoboy to version 1.3.4
 * Added support for Arduino Mega 2560 and Arduino UNO Wifi

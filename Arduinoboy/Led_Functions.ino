@@ -1,45 +1,55 @@
-
- /*
+/*
    showSelectedMode1 turns off the last mode led, turns on the new mode led
    and delays for a period of time to reduce jitter behavior from the mode
    changing too fast.
  */
 void showSelectedMode()
 {
-  digitalWrite(pinStatusLed,LOW);
+  digitalWrite(pinStatusLed, LOW);
 
-  for(int m=0;m<3;m++) {
-    switch(memory[MEM_MODE]) {
-      case 0:
-      case 1:
-      case 2:
-      case 3:
-      case 4:
-        digitalWrite(pinLeds[memory[MEM_MODE]],HIGH);
-        break;
-      case 5:
-        digitalWrite(pinStatusLed,HIGH);
-        digitalWrite(pinLeds[0],HIGH);
-        digitalWrite(pinLeds[1],HIGH);
-        break;
-      case 6:
-        digitalWrite(pinLeds[0],HIGH);
-        digitalWrite(pinLeds[1],HIGH);
-        digitalWrite(pinLeds[2],HIGH);
-        digitalWrite(pinLeds[3],HIGH);
-        digitalWrite(pinLeds[4],HIGH);
-        digitalWrite(pinLeds[5],HIGH);
-        break;
-
-    }
-  delay(100);
-  digitalWrite(pinLeds[0],LOW);
-  digitalWrite(pinLeds[1],LOW);
-  digitalWrite(pinLeds[2],LOW);
-  digitalWrite(pinLeds[3],LOW);
-  digitalWrite(pinLeds[4],LOW);
-  digitalWrite(pinLeds[5],LOW);
-  delay(100);
+  switch (memory[MEM_MODE]) {
+    case 0: // Mode 1 - LSDJ PC Keyboard mode [Mode 3]
+      // Blue
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 255);
+      break;
+    case 1: // Mode 2 - LSDJ as MIDI Master Sync [Mode 2]
+      // Green
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 0);
+      break;
+    case 2: // Mode 3 - LSDJ as MIDI Slave Sync [Mode 1]
+      // Red
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 0);
+      break;
+    case 3: // Mode 4 - Full MIDI (mGB) [Mode 5]
+      // Cyan
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 255);
+      break;
+    case 4: // Mode 5 - Nanoloop [Mode 4]
+      // Yellow
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 0);
+      break;
+    case 5: // Mode 6 - LSDJ MIDIMAP [Mode 6]
+      // Magenta
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 255);
+      break;
+    case 6: // Mode 7 - LSDJ MIDIOUT [Mode 7]
+      // White
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 255);
+      break;
   }
   lastMode = memory[MEM_MODE];
   delay(300);
@@ -48,157 +58,93 @@ void showSelectedMode()
 void updateVisualSync()
 {
     if(!countSyncTime) {
-      if(!blinkSwitch[5]) digitalWrite(pinStatusLed,HIGH);
-      digitalWrite(pinLeds[0],LOW);
-      digitalWrite(pinLeds[1],LOW);
-      digitalWrite(pinLeds[2],LOW);
-      digitalWrite(pinLeds[3],LOW);
-      digitalWrite(pinLeds[switchLight],HIGH);
-      blinkSwitch[5]=1;
-      blinkSwitchTime[5]=0;
+      if(!blinkSwitch[1]) digitalWrite(pinStatusLed,HIGH);
+      switch (memory[MEM_MODE]) {
+        case 0: // Mode 1 - LSDJ PC Keyboard mode [Mode 3]
+         // Blue
+         analogWrite(pinRedLed, 0);
+         analogWrite(pinGreenLed, 0);
+         analogWrite(pinBlueLed, 255);
+         break;
+       case 1: // Mode 2 - LSDJ as MIDI Master Sync [Mode 2]
+         // Green
+         analogWrite(pinRedLed, 0);
+         analogWrite(pinGreenLed, 255);
+         analogWrite(pinBlueLed, 0);
+         break;
+       case 2: // Mode 3 - LSDJ as MIDI Slave Sync [Mode 1]
+         // Red
+         analogWrite(pinRedLed, 255);
+         analogWrite(pinGreenLed, 0);
+         analogWrite(pinBlueLed, 0);
+         break;
+       case 3: // Mode 4 - Full MIDI (mGB) [Mode 5]
+         // Cyan
+         analogWrite(pinRedLed, 0);
+         analogWrite(pinGreenLed, 255);
+         analogWrite(pinBlueLed, 255);
+         break;
+       case 4: // Mode 5 - Nanoloop [Mode 4]
+         // Yellow
+         analogWrite(pinRedLed, 255);
+         analogWrite(pinGreenLed, 255);
+         analogWrite(pinBlueLed, 0);
+         break;
+       case 5: // Mode 6 - LSDJ MIDIMAP [Mode 6]
+         // Magenta
+         analogWrite(pinRedLed, 255);
+         analogWrite(pinGreenLed, 0);
+         analogWrite(pinBlueLed, 255);
+         break;
+       case 6: // Mode 7 - LSDJ MIDIOUT [Mode 7]
+         // White
+         analogWrite(pinRedLed, 255);
+         analogWrite(pinGreenLed, 255);
+         analogWrite(pinBlueLed, 255);
+         break;
+      }
+      blinkSwitch[1]=1;
+      blinkSwitchTime[1]=0;
       countSyncLightTime = 0;
-      switchLight++;
-      if(switchLight==4) switchLight=0;
     }
     countSyncTime++;
     if(countSyncTime == 24) countSyncTime=0;
 }
 
-
-
 void updateBlinkLights()
 {
-  updateBlinkLight(0);
-  updateBlinkLight(1);
-  updateBlinkLight(2);
-  updateBlinkLight(3);
-  updateBlinkLight(4);
-  updateBlinkLight(5);
+  updateBlinkRGB();
+  updateStatusLight();
 }
 
-void updateBlinkLight(uint8_t light)
+void updateBlinkRGB()
 {
-  if(blinkSwitch[light]) {
-    blinkSwitchTime[light]++;
-    if(blinkSwitchTime[light] == blinkMaxCount) {
-      blinkSwitch[light]=0;
-      blinkSwitchTime[light]=0;
-      digitalWrite(pinLeds[light],LOW);
+  if(blinkSwitch[0]) {
+    blinkSwitchTime[0]++;
+    if(blinkSwitchTime[0] == blinkMaxCount) {
+      blinkSwitch[0]=0;
+      blinkSwitchTime[0]=0;
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 0);
     }
   }
 }
 
 void updateStatusLight()
 {
-  if(blinkSwitch[5]) {
-    blinkSwitchTime[5]++;
-    if(blinkSwitchTime[5] == blinkMaxCount) {
-      blinkSwitch[5]=0;
-      blinkSwitchTime[5]=0;
+  if(blinkSwitch[1]) {
+    blinkSwitchTime[1]++;
+    if(blinkSwitchTime[1] == blinkMaxCount) {
+      blinkSwitch[1]=0;
+      blinkSwitchTime[1]=0;
       digitalWrite(pinStatusLed,LOW);
     }
   }
 }
 
-void blinkLight(byte midiMessage, byte midiValue)
+void blinkLight(byte midiMessage)
 {
-  if(midiValue) {
-  switch(midiMessage) {
-    case 0x90:
-      if(!blinkSwitch[0]) digitalWrite(pinLeds[0],HIGH);
-      blinkSwitch[0]=1;
-      blinkSwitchTime[0]=0;
-      break;
-    case 0x95:
-      if(!blinkSwitch[0]) digitalWrite(pinLeds[0],HIGH);
-      blinkSwitch[0]=1;
-      blinkSwitchTime[0]=0;
-      break;
-    case 0x9A:
-      if(!blinkSwitch[0]) digitalWrite(pinLeds[0],HIGH);
-      blinkSwitch[0]=1;
-      blinkSwitchTime[0]=0;
-      break;
-    case 0x91:
-      if(!blinkSwitch[1]) digitalWrite(pinLeds[1],HIGH);
-      blinkSwitch[1]=1;
-      blinkSwitchTime[1]=0;
-      break;
-    case 0x96:
-      if(!blinkSwitch[1]) digitalWrite(pinLeds[1],HIGH);
-      blinkSwitch[1]=1;
-      blinkSwitchTime[1]=0;
-      break;
-    case 0x9B:
-      if(!blinkSwitch[1]) digitalWrite(pinLeds[1],HIGH);
-      blinkSwitch[1]=1;
-      blinkSwitchTime[1]=0;
-      break;
-    case 0x92:
-      if(!blinkSwitch[2]) digitalWrite(pinLeds[2],HIGH);
-      blinkSwitch[2]=1;
-      blinkSwitchTime[2]=0;
-      break;
-    case 0x97:
-      if(!blinkSwitch[2]) digitalWrite(pinLeds[2],HIGH);
-      blinkSwitch[2]=1;
-      blinkSwitchTime[2]=0;
-      break;
-    case 0x9C:
-      if(!blinkSwitch[2]) digitalWrite(pinLeds[2],HIGH);
-      blinkSwitch[2]=1;
-      blinkSwitchTime[2]=0;
-      break;
-    case 0x93:
-      if(!blinkSwitch[3]) digitalWrite(pinLeds[3],HIGH);
-      blinkSwitch[3]=1;
-      blinkSwitchTime[3]=0;
-      break;
-    case 0x98:
-      if(!blinkSwitch[3]) digitalWrite(pinLeds[3],HIGH);
-      blinkSwitch[3]=1;
-      blinkSwitchTime[3]=0;
-      break;
-    case 0x9D:
-      if(!blinkSwitch[3]) digitalWrite(pinLeds[3],HIGH);
-      blinkSwitch[3]=1;
-      blinkSwitchTime[3]=0;
-      break;
-    case 0x94:
-      if(!blinkSwitch[0])  digitalWrite(pinLeds[0],HIGH);
-      blinkSwitch[0]=1;
-      blinkSwitchTime[0]=0;
-      if(!blinkSwitch[1]) digitalWrite(pinLeds[1],HIGH);
-      blinkSwitch[1]=1;
-      blinkSwitchTime[1]=0;
-      if(!blinkSwitch[2]) digitalWrite(pinLeds[2],HIGH);
-      blinkSwitch[2]=1;
-      blinkSwitchTime[2]=0;
-      break;
-    case 0x99:
-      if(!blinkSwitch[0])  digitalWrite(pinLeds[0],HIGH);
-      blinkSwitch[0]=1;
-      blinkSwitchTime[0]=0;
-      if(!blinkSwitch[1]) digitalWrite(pinLeds[1],HIGH);
-      blinkSwitch[1]=1;
-      blinkSwitchTime[1]=0;
-      if(!blinkSwitch[2]) digitalWrite(pinLeds[2],HIGH);
-      blinkSwitch[2]=1;
-      blinkSwitchTime[2]=0;
-      break;
-    case 0x9E:
-      if(!blinkSwitch[0])  digitalWrite(pinLeds[0],HIGH);
-      blinkSwitch[0]=1;
-      blinkSwitchTime[0]=0;
-      if(!blinkSwitch[1]) digitalWrite(pinLeds[1],HIGH);
-      blinkSwitch[1]=1;
-      blinkSwitchTime[1]=0;
-      if(!blinkSwitch[2]) digitalWrite(pinLeds[2],HIGH);
-      blinkSwitch[2]=1;
-      blinkSwitchTime[2]=0;
-      break;
-  }
-  }
   switch(midiMessage) {
     case 0xE0:
     case 0xE1:
@@ -210,9 +156,9 @@ void blinkLight(byte midiMessage, byte midiValue)
     case 0xB2:
     case 0xB3:
     case 0xB4:
-      if(!blinkSwitch[5]) digitalWrite(pinStatusLed,HIGH);
-      blinkSwitch[5]=1;
-      blinkSwitchTime[5]=0;
+      if(!blinkSwitch[1]) digitalWrite(pinStatusLed,HIGH);
+      blinkSwitch[1]=1;
+      blinkSwitchTime[1]=0;
       break;
     default:
       break;
@@ -224,11 +170,9 @@ void updateProgrammerLeds()
   if(miscLedTime == miscLedMaxTime) {
     if(sysexProgrammingConnected) {
       miscLedMaxTime = 400;
-      blinkSelectedLight(miscLastLed);
-      miscLastLed++;
-      if(miscLastLed == 5) miscLastLed = 0;
+      blinkRGB();
     } else {
-      blinkSelectedLight(5);
+      blinkPurple();
       miscLedMaxTime = 3000;
     }
     miscLedTime=0;
@@ -278,30 +222,29 @@ void statusLedOn()
 /* cute startup sequence */
 void startupSequence()
 {
-  int ledFxA;
-  int ledFxB;
+  // Define RGB values for each color
+  int colors[7][3] = {
+    {255, 0, 0},   // Red
+    {0, 255, 0},   // Green
+    {0, 0, 255},   // Blue
+    {255, 255, 0}, // Yellow
+    {0, 255, 255}, // Cyan
+    {255, 0, 255}, // Magenta
+    {255, 255, 255} // White
+  };
 
-  for(ledFxB=0;ledFxB<2;ledFxB++) {
-  for(ledFxA=0;ledFxA<6;ledFxA++) {
-    digitalWrite(pinLeds[ledFxA], HIGH);
-    delay(25);
-    digitalWrite(pinLeds[ledFxA], LOW);
+  for (int cycle = 0; cycle < 2; cycle++) {
+    for (int i = 0; i < 7; i++) {
+      analogWrite(pinRedLed, colors[i][0]);
+      analogWrite(pinGreenLed, colors[i][1]);
+      analogWrite(pinBlueLed, colors[i][2]);
+      delay(100);
+    }
   }
-  for(ledFxA=4;ledFxA>=0;ledFxA--) {
-    digitalWrite(pinLeds[ledFxA], HIGH);
-    delay(25);
-    digitalWrite(pinLeds[ledFxA], LOW);
-  }
-  }
-  delay(50);
 
-  for(ledFxA=0;ledFxA<6;ledFxA++) digitalWrite(pinLeds[ledFxA], HIGH);   // sets the LED on
-  delay(100);
-  for(ledFxA=0;ledFxA<6;ledFxA++) digitalWrite(pinLeds[ledFxA], LOW);      // sets the digital pin as output
-  delay(100);
-  for(ledFxA=0;ledFxA<6;ledFxA++) digitalWrite(pinLeds[ledFxA], HIGH);   // sets the LED on
-  delay(100);
-  for(ledFxA=0;ledFxA<6;ledFxA++) digitalWrite(pinLeds[ledFxA], LOW);      // sets the digital pin as output
+  // Turn off the RGB LED
+  analogWrite(pinRedLed, 0);
+  analogWrite(pinGreenLed, 0);
+  analogWrite(pinBlueLed, 0);
   delay(500);
-
 }

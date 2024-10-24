@@ -117,7 +117,7 @@ void midioutDoAction(byte m, byte v)
     m-=8;
     playPC(m,v);
   }
-  blinkLight(0x90+m,v);
+  blinkLight(0x90+m);
 }
 
 void checkStopNote(byte m)

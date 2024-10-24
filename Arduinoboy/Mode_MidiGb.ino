@@ -87,7 +87,7 @@ void modeMidiGb()
         sendByteToGameboy(midiData[2]);
         delayMicroseconds(GB_MIDI_DELAY);
         statusLedOn();
-        blinkLight(midiData[0],midiData[2]);
+        blinkLight(midiData[0]);
       }
     } else {
       setMode();                // Check if mode button was depressed
@@ -157,7 +157,7 @@ void modeMidiGbUsbMidiReceive()
                 delayMicroseconds(GB_MIDI_DELAY);
                 sendByteToGameboy(usbMIDI.getData2());
                 delayMicroseconds(GB_MIDI_DELAY);
-                blinkLight(s, usbMIDI.getData2());
+                blinkLight(s);
             break;
             case 0xB0: // CC
                 sendByteToGameboy(0xB0+ch);
@@ -166,14 +166,14 @@ void modeMidiGbUsbMidiReceive()
                 delayMicroseconds(GB_MIDI_DELAY);
                 sendByteToGameboy(usbMIDI.getData2());
                 delayMicroseconds(GB_MIDI_DELAY);
-                blinkLight(0xB0+ch, usbMIDI.getData2());
+                blinkLight(0xB0+ch);
             break;
             case 0xC0: // PG
                 sendByteToGameboy(0xC0+ch);
                 delayMicroseconds(GB_MIDI_DELAY);
                 sendByteToGameboy(usbMIDI.getData1());
                 delayMicroseconds(GB_MIDI_DELAY);
-                blinkLight(0xC0+ch, usbMIDI.getData2());
+                blinkLight(0xC0+ch);
             break;
             case 0xE0: // PB
                 sendByteToGameboy(0xE0+ch);
@@ -230,7 +230,7 @@ void modeMidiGbUsbMidiReceive()
           delayMicroseconds(GB_MIDI_DELAY);
           sendByteToGameboy(rx.byte3);
           delayMicroseconds(GB_MIDI_DELAY);
-          blinkLight(s, rx.byte2);
+          blinkLight(s);
           break;
         case 0x0B: // CC
           sendByteToGameboy(0xB0 + ch);
@@ -239,14 +239,14 @@ void modeMidiGbUsbMidiReceive()
           delayMicroseconds(GB_MIDI_DELAY);
           sendByteToGameboy(rx.byte3);
           delayMicroseconds(GB_MIDI_DELAY);
-          blinkLight(0xB0 + ch, rx.byte2);
+          blinkLight(0xB0 + ch);
           break;
         case 0x0C: // PG
           sendByteToGameboy(0xC0 + ch);
           delayMicroseconds(GB_MIDI_DELAY);
           sendByteToGameboy(rx.byte2);
           delayMicroseconds(GB_MIDI_DELAY);
-          blinkLight(0xC0 + ch, rx.byte2);
+          blinkLight(0xC0 + ch);
           break;
         case 0x0E: // PB
           sendByteToGameboy(0xE0 + ch);

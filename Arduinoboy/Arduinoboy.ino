@@ -23,7 +23,8 @@
  *  https://github.com/trash80/Arduinoboy                                  *
  *                                                                         *
  *   Arduino pin settings:  (Layout is final)                              *
- *     - 6 LEDS on pins 8 to 13                                            *
+ *     - 1 LED on 13 (Status LED)                                          *
+ *     - 1 RGB LED on pins 10 (red), 11 (green) and 12 (blue)              *
  *     - Push button on pin 3 (for selecting mode)                         *
  *     - MIDI Opto-isolator power on pin 4                                 *
  *     - Gameboy Clock line on analog in pin 0                             *
@@ -31,7 +32,8 @@
  *     - Serial Data from gameboy on analog in pin 2                       *
  *                                                                         *
  *   Teensy pin settings:                                                  *
- *     - 6 LEDS on pins 23,22,21,20,4,13                                   *
+ *     - 1 LED on 13 (Status LED)                                          *
+ *     - 1 RGB LED on pins 21 (red), 21 (green) and 23 (blue)              *
  *     - Push button on pin 2 (for selecting mode)                         *
  *     - MIDI Opto-isolator power connected to +3v                         *
  *     - Gameboy Clock line on pin 16                                      *
@@ -168,7 +170,10 @@ int pinGBSerialOut = 17;    // Analog In 1 - serial data to gameboy
 int pinGBSerialIn  = 18;    // Analog In 2 - serial data from gameboy
 int pinMidiInputPower = 0; // Not used!
 int pinStatusLed = 13; // Status LED
-int pinLeds[] = {23,22,21,20,4,13}; // LED Pins
+// Define RGB LED pins
+int pinRedLed = 21;
+int pinGreenLed = 22;
+int pinBlueLed = 23;
 int pinButtonMode = 2; //toggle button for selecting the mode
 
 HardwareSerial *serial = &Serial1;
@@ -188,8 +193,10 @@ int pinGBClock     = A0;    // Analog In 0 - clock out to gameboy
 int pinGBSerialOut = A1;    // Analog In 1 - serial data to gameboy
 int pinGBSerialIn  = A2;    // Analog In 2 - serial data from gameboy
 int pinMidiInputPower = 4; // power pin for midi input opto-isolator
-int pinStatusLed = 13; // Status LED
-int pinLeds[] = {12,11,10,9,8,13}; // LED Pins
+// Define RGB LED pins
+int pinRedLed = 10;
+int pinGreenLed = 11;
+int pinBlueLed = 12;
 int pinButtonMode = 3; //toggle button for selecting the mode
 
 HardwareSerial *serial = &Serial1;
@@ -214,7 +221,10 @@ int pinGBSerialOut = A1;    // Analog In 1 - serial data to gameboy
 int pinGBSerialIn  = A2;    // Analog In 2 - serial data from gameboy
 int pinMidiInputPower = 4; // power pin for midi input opto-isolator
 int pinStatusLed = 13; // Status LED
-int pinLeds[] = {12,11,10,9,8,13}; // LED Pins
+// Define RGB LED pins
+int pinRedLed = 10;
+int pinGreenLed = 11;
+int pinBlueLed = 12;
 int pinButtonMode = 3; //toggle button for selecting the mode
 
 HardwareSerial *serial = &Serial;
@@ -239,7 +249,10 @@ int pinGBSerialOut = A1;    // Analog In 1 - serial data to gameboy
 int pinGBSerialIn  = A2;    // Analog In 2 - serial data from gameboy
 int pinMidiInputPower = 4; // power pin for midi input opto-isolator
 int pinStatusLed = 13; // Status LED
-int pinLeds[] = {12,11,10,9,8,13}; // LED Pins
+// Define RGB LED pins
+int pinRedLed = 10;
+int pinGreenLed = 11;
+int pinBlueLed = 12;
 int pinButtonMode = 3; //toggle button for selecting the mode
 
 HardwareSerial *serial = &Serial;
@@ -305,9 +318,8 @@ unsigned long int buttonProgrammerWaitTime = 2000; //2 whole seconds
 unsigned long int buttonTime;
 
 
-boolean blinkSwitch[6];
-unsigned long int blinkSwitchTime[6];
-uint8_t switchLight = 0;
+boolean blinkSwitch[1];
+unsigned long int blinkSwitchTime[1];
 
 uint16_t blinkMaxCount = 1000;
 
@@ -331,7 +343,6 @@ int countStatusLedOn =0;
 unsigned int waitClock =0;
 
 
-int miscLastLed;
 unsigned long int miscLedTime;
 unsigned long int miscLedMaxTime;
 
@@ -429,7 +440,9 @@ void setup() {
 /*
   Init Pins
 */
-  for(int led=0;led<=5;led++) pinMode(pinLeds[led],OUTPUT);
+  pinMode(pinRedLed, OUTPUT);
+  pinMode(pinGreenLed, OUTPUT);
+  pinMode(pinBlueLed, OUTPUT);
   pinMode(pinStatusLed,OUTPUT);
   pinMode(pinButtonMode,INPUT);
 

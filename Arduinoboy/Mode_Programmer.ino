@@ -216,10 +216,68 @@ boolean checkForProgrammerSysex(byte sin)
     return false;
 }
 
-
-void blinkSelectedLight(int led)
+void blinkPurple()
 {
-      if(!blinkSwitch[led]) digitalWrite(pinLeds[led],HIGH);
-      blinkSwitch[led]=1;
-      blinkSwitchTime[led]=0;
+  analogWrite(pinRedLed, 128);  // Medium red
+  analogWrite(pinGreenLed, 0);  // Green off
+  analogWrite(pinBlueLed, 128); // Medium blue
+
+  // Set blink state and reset timer for the mode
+  blinkSwitch[0] = 1;
+  blinkSwitchTime[0] = 0;
+}
+
+void blinkRGB()
+{
+    // Define RGB values for each mode
+    int redValue = 0, greenValue = 0, blueValue = 0;
+    
+    switch (memory[MEM_MODE]) {
+        case 0: // Mode 1 - LSDJ PC Keyboard mode [Mode 3]
+      // Blue
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 255);
+      break;
+    case 1: // Mode 2 - LSDJ as MIDI Master Sync [Mode 2]
+      // Green
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 0);
+      break;
+    case 2: // Mode 3 - LSDJ as MIDI Slave Sync [Mode 1]
+      // Red
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 0);
+      break;
+    case 3: // Mode 4 - Full MIDI (mGB) [Mode 5]
+      // Cyan
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 255);
+      break;
+    case 4: // Mode 5 - Nanoloop [Mode 4]
+      // Yellow
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 0);
+      break;
+    case 5: // Mode 6 - LSDJ MIDIMAP [Mode 6]
+      // Magenta
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 255);
+      break;
+    case 6: // Mode 7 - LSDJ MIDIOUT [Mode 7]
+      // White
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 255);
+      break;
+    }
+
+    // Set blink state and reset timer for the mode
+    blinkSwitch[0] = 1;
+    blinkSwitchTime[0] = 0;
 }

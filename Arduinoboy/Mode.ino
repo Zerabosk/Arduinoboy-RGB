@@ -89,7 +89,6 @@ void sequencerStart()
   countSyncPulse = 0;      //Used for status LED, counts 24 ticks (quarter notes)
   countSyncTime = 0;       //Used to count a custom amount of clock ticks (2/4/8) for sync effects
   countSyncLightTime=0;
-  switchLight=0;
 }
 
  /*
@@ -105,10 +104,54 @@ void sequencerStop()
   countSyncPulse = 0;         //Used for status LED, counts 24 ticks (quarter notes)
   countSyncTime = 0;          //Used to count a custom amount of clock ticks (2/4/8) for sync effects
   countSyncLightTime=0;
-  switchLight=0;
-  digitalWrite(pinLeds[0],LOW);
-  digitalWrite(pinLeds[1],LOW);
-  digitalWrite(pinLeds[2],LOW);
-  digitalWrite(pinLeds[3],LOW);
-  digitalWrite(pinLeds[memory[MEM_MODE]],HIGH);
+  // Ignore the LEDs for now - Maybe dont need this as we arn't using the RGB for displaying activity.
+  // digitalWrite(pinLeds[0],LOW);
+  // digitalWrite(pinLeds[1],LOW);
+  // digitalWrite(pinLeds[2],LOW);
+  // digitalWrite(pinLeds[3],LOW);
+  // digitalWrite(pinLeds[memory[MEM_MODE]],HIGH);
+  switch (memory[MEM_MODE]) {
+      case 0: // Mode 1 - LSDJ PC Keyboard mode [Mode 3]
+      // Blue
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 255);
+      break;
+    case 1: // Mode 2 - LSDJ as MIDI Master Sync [Mode 2]
+      // Green
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 0);
+      break;
+    case 2: // Mode 3 - LSDJ as MIDI Slave Sync [Mode 1]
+      // Red
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 0);
+      break;
+    case 3: // Mode 4 - Full MIDI (mGB) [Mode 5]
+      // Cyan
+      analogWrite(pinRedLed, 0);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 255);
+      break;
+    case 4: // Mode 5 - Nanoloop [Mode 4]
+      // Yellow
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 0);
+      break;
+    case 5: // Mode 6 - LSDJ MIDIMAP [Mode 6]
+      // Magenta
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 0);
+      analogWrite(pinBlueLed, 255);
+      break;
+    case 6: // Mode 7 - LSDJ MIDIOUT [Mode 7]
+      // White
+      analogWrite(pinRedLed, 255);
+      analogWrite(pinGreenLed, 255);
+      analogWrite(pinBlueLed, 255);
+      break;
+    }
 }
